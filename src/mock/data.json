@@ -1,0 +1,86 @@
+[
+    {
+      "className": "bg-gray-300 py-2",
+      "value": "("
+    },
+    {
+      "className": "bg-gray-300 py-2",
+      "value": ")"
+    },
+    {
+      "className": "bg-gray-300 py-2",
+      "value": "%"
+    },
+    {
+      "className": "bg-gray-300 py-2",
+      "value": "AC"
+    },
+    {
+      "className": "bg-gray-300 py-2",
+      "value": "CE"
+    },
+    {
+      "className": "bg-[#f1f3f4] py-2",
+      "value": 7
+    },
+    {
+      "className": "bg-[#f1f3f4] py-2",
+      "value": 8
+    },
+    {
+      "className": "bg-[#f1f3f4] py-2",
+      "value": 9
+    },
+    {
+      "className": "bg-gray-300 py-2",
+      "value": "/"
+    },
+    {
+      "className": "bg-[#f1f3f4] py-2",
+      "value": 4
+    },
+    {
+      "className": "bg-[#f1f3f4] py-2",
+      "value": 5
+    },
+    {
+      "className": "bg-[#f1f3f4] py-2",
+      "value": 6
+    },
+    {
+      "className": "bg-gray-300 py-2",
+      "value": "*"
+    },
+    {
+      "className": "bg-[#f1f3f4] py-2",
+      "value": 1
+    },
+    {
+      "className": "bg-[#f1f3f4] py-2",
+      "value": 2
+    },
+    {
+      "className": "bg-[#f1f3f4] py-2",
+      "value": 3
+    },
+    {
+      "className": "bg-gray-300 py-2",
+      "value": "-"
+    },
+    {
+      "className": "bg-[#f1f3f4] py-2",
+      "value": 0
+    },
+    {
+      "className": "bg-[#f1f3f4] py-2",
+      "value": "."
+    },
+    {
+      "className": "bg-blue-600 py-2 text-white",
+      "value": "="
+    },
+    {
+      "className": "bg-gray-300 py-2",
+      "value": "+"
+    }
+  ]
