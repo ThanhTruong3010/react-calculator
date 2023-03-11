@@ -8,7 +8,7 @@ $ yarn install
 
 ## Server demo
 
-https://inquisitive-puppy-e8a55a.netlify.app/
+https://splendorous-faloodeh-6edf5b.netlify.app/
 
 ## Running the app
 

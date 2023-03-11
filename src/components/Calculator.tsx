@@ -3,12 +3,14 @@ import CalculatorTitle from "./CalculatorTitle";
 import DisplayResult from "./DisplayResult";
 import DATA from "../mock/data.json";
 
+const isDigit = (char: string) => "0" <= char && char <= "9";
+
 const Calculator = () => {
   const [isAC, setIsAC] = useState(true);
   const [error, setError] = useState("");
   const [data, setData] = useState(DATA);
-  const [question, setQuestion] = useState("");
-  const [answer, setAnswer] = useState("0");
+  const [question, setQuestion] = useState(["0"] as string[]);
+  const [answer, setAnswer] = useState("");
 
   useEffect(() => {
     const condition = isAC ? "CE" : "AC";
@@ -21,49 +23,127 @@ const Calculator = () => {
     setError("");
     switch (value) {
       case "=": {
-        // if it's an equal sign, use the eval module
-        // to evaluate the question ,convert the answer
-        // (in number) to String
-        if (question !== "") {
-          let ans = "";
+        // don't calculate again
+        if (question.at(-1) !== "=") {
           try {
-            ans = eval(question);
+            const equation = question
+              .flatMap((item, index) => {
+                if (
+                  item === "(" &&
+                  index > 0 &&
+                  isDigit(question[index - 1][0])
+                ) {
+                  return ["*", item];
+                }
+                return [item];
+              })
+              .join("");
+
+            const ans = eval(equation);
+            // if equation evaluate successfully, mark question as calculated
+            setQuestion((q) => [...q, "="]);
+
+            setIsAC(true);
+            setAnswer(ans);
           } catch (err) {
             setError("Math error");
             setAnswer(answer);
             return;
           }
-          setIsAC(true);
-          setAnswer(ans);
-          setQuestion("");
           break;
         }
       }
       case "AC": {
-        // if it's the Clears sign, just clean our
+        // if it's the AC sign, just clean our
         // question and answer in the state
-        setAnswer("0");
-        setQuestion("");
+        setAnswer("Ans = 0");
+        setQuestion(["0"]);
         setIsAC(true);
         break;
       }
 
       case "CE": {
-        let str = question.trimEnd();
-        str = str.substring(0, str.length - 1);
-        console.log("str", str);
-        setQuestion(str);
+        setQuestion((preState) => {
+          const lastItem = preState.at(-1)!;
+          if (lastItem.length === 1) {
+            const arr = preState.slice(0, -1);
+            return arr.length === 0 ? ["0"] : arr;
+          }
+          return [...preState.slice(0, -1), lastItem.slice(0, -1)];
+        });
         break;
       }
 
       default: {
         // for every other command, update the answer in the state
-        setQuestion(
-          (preState) =>
-            (preState =
-              preState + `${typeof value === "number" ? value : ` ${value} `}`)
-        );
-        break;
+        setQuestion((preState) => {
+          const lastItem = preState.at(-1)!;
+          if (lastItem === "=") {
+            setAnswer((answer) => "Ans = " + answer);
+            if (typeof value === "number") {
+              return [Number(value).toString()];
+            } else {
+              // keep answer as an operand
+              return [answer, value];
+            }
+          }
+          if (value === "(") {
+            if (preState.length === 1 && lastItem === "0") {
+              return ["("];
+            }
+            return [...preState, value];
+          }
+          if (value === ")") {
+            // prevent empty pair of bracket "()"
+            if (lastItem === "(") {
+              return preState;
+            }
+            // the number of open brackets, which are not closed
+            const open = preState.reduce((result, value) => {
+              if (value === "(") return result + 1;
+              if (value === ")") return result - 1;
+              return result;
+            }, 0);
+            return open === 0 ? preState : [...preState, value];
+          }
+
+          const last2Digits = lastItem.padStart(2, " ").slice(-2);
+          const [a, b] = last2Digits;
+          // lastItem is a number
+          const isNumber = "0" <= b && b <= "9";
+
+          if (typeof value === "number") {
+            // if question endsWith 0, with no doubt, lastItem is a number
+            if (b === "0") {
+              // if the second last character is not a number
+              if (a < "0" || a > "9") {
+                // then, the last number in question is 0, replace with input number
+                return [
+                  ...preState.slice(0, -1),
+                  lastItem.slice(0, -1) + Number(value).toString(),
+                ];
+              }
+            }
+
+            // lastItem is a number
+            if (isNumber) {
+              return [
+                ...preState.slice(0, -1),
+                lastItem + Number(value).toString(),
+              ];
+            }
+
+            // lastItem is not a number
+            return [...preState, Number(value).toString()];
+          }
+          // lastItem is definitely a operator now
+          if (isNumber) {
+            // add new operator
+            return [...preState, value];
+          }
+          // replace operator
+          return [...preState.slice(0, -1), value];
+        });
       }
     }
   };
